@@ -1,0 +1,766 @@
+{
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "run_id": "44444444-4444-4444-8444-444444444444",
+  "description": "AWS hero: public bucket + SSH bastion + narrow write role",
+  "assets": [
+    {
+      "asset_id": "a4fc5ca5-5ab2-5b60-bdcb-02493615cf49",
+      "canonical_key": "arn:aws:s3:::customer-uploads",
+      "graph_node_id": "arn:aws:s3:::customer-uploads",
+      "display_name": "customer-uploads",
+      "cloud": "aws",
+      "resource_type": "s3_bucket",
+      "region": "ap-south-1",
+      "is_internet_exposed": true,
+      "props": {
+        "anonymous_access": "read"
+      }
+    },
+    {
+      "asset_id": "c847a84d-38c0-54df-9f7d-994260f540c8",
+      "canonical_key": "arn:aws:s3:::archive-internal",
+      "graph_node_id": "arn:aws:s3:::archive-internal",
+      "display_name": "archive-internal",
+      "cloud": "aws",
+      "resource_type": "s3_bucket",
+      "region": "ap-south-1",
+      "is_internet_exposed": false
+    },
+    {
+      "asset_id": "b2c457bc-cc11-5f18-8008-667865d432ce",
+      "canonical_key": "arn:aws:s3:::public-read-only-bucket",
+      "graph_node_id": "arn:aws:s3:::public-read-only-bucket",
+      "display_name": "public-read-only-bucket",
+      "cloud": "aws",
+      "resource_type": "s3_bucket",
+      "region": "ap-south-1",
+      "is_internet_exposed": true
+    },
+    {
+      "asset_id": "3a3794cd-9062-5110-a7f1-94fbd58bb29f",
+      "canonical_key": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "graph_node_id": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "display_name": "upload-bastion",
+      "cloud": "aws",
+      "resource_type": "ec2_instance",
+      "region": "ap-south-1",
+      "is_internet_exposed": true
+    },
+    {
+      "asset_id": "1e62c619-6f40-5acd-b265-75f45a9564b2",
+      "canonical_key": "arn:aws:ec2:ap-south-1:123456789012:instance/internal-worker",
+      "graph_node_id": "arn:aws:ec2:ap-south-1:123456789012:instance/internal-worker",
+      "display_name": "internal-worker",
+      "cloud": "aws",
+      "resource_type": "ec2_instance",
+      "region": "ap-south-1",
+      "is_internet_exposed": false
+    },
+    {
+      "asset_id": "eb8593cc-3b35-5a09-8aef-f5a585e578ac",
+      "canonical_key": "arn:aws:ec2:ap-south-1:123456789012:instance/private-admin-host",
+      "graph_node_id": "arn:aws:ec2:ap-south-1:123456789012:instance/private-admin-host",
+      "display_name": "private-admin-host",
+      "cloud": "aws",
+      "resource_type": "ec2_instance",
+      "region": "ap-south-1",
+      "is_internet_exposed": false
+    },
+    {
+      "asset_id": "1395cc31-3504-53a7-b5af-a610dc10ff79",
+      "canonical_key": "arn:aws:iam::123456789012:role/upload-writer",
+      "graph_node_id": "arn:aws:iam::123456789012:role/upload-writer",
+      "display_name": "upload-writer",
+      "cloud": "aws",
+      "resource_type": "iam_role",
+      "region": "global"
+    },
+    {
+      "asset_id": "d507f162-178a-5461-b0d9-cfb722cdf2e3",
+      "canonical_key": "arn:aws:iam::123456789012:role/platform-admin",
+      "graph_node_id": "arn:aws:iam::123456789012:role/platform-admin",
+      "display_name": "platform-admin",
+      "cloud": "aws",
+      "resource_type": "iam_role",
+      "region": "global"
+    }
+  ],
+  "nodes": [
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "net:0.0.0.0/0",
+      "kind": "network",
+      "labels": [
+        "Network",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "resource_type": "cidr",
+      "name": "0.0.0.0/0",
+      "props": {
+        "cidr": "0.0.0.0/0"
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "acct:aws:123456789012",
+      "kind": "account",
+      "labels": [
+        "Account",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "name": "demo-aws",
+      "native_id": "123456789012",
+      "resource_type": "aws_account"
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:s3:::customer-uploads",
+      "kind": "resource",
+      "labels": [
+        "Resource",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "s3_bucket",
+      "name": "customer-uploads",
+      "props": {
+        "is_public": true,
+        "is_internet_exposed": true,
+        "is_encrypted": false,
+        "is_critical_data": true,
+        "anonymous_access": "read"
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:s3:::archive-internal",
+      "kind": "resource",
+      "labels": [
+        "Resource",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "s3_bucket",
+      "name": "archive-internal",
+      "props": {
+        "is_public": false,
+        "is_encrypted": true,
+        "anonymous_access": "none"
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:s3:::public-read-only-bucket",
+      "kind": "resource",
+      "labels": [
+        "Resource",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "s3_bucket",
+      "name": "public-read-only-bucket",
+      "props": {
+        "is_public": true,
+        "is_internet_exposed": true,
+        "is_encrypted": true,
+        "anonymous_access": "read"
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "kind": "resource",
+      "labels": [
+        "Resource",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "ec2_instance",
+      "name": "upload-bastion",
+      "props": {
+        "is_internet_exposed": true
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:instance/internal-worker",
+      "kind": "resource",
+      "labels": [
+        "Resource",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "ec2_instance",
+      "name": "internal-worker",
+      "props": {
+        "is_internet_exposed": false
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:instance/private-admin-host",
+      "kind": "resource",
+      "labels": [
+        "Resource",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "ec2_instance",
+      "name": "private-admin-host",
+      "props": {
+        "is_internet_exposed": false
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-upload-ssh",
+      "kind": "network",
+      "labels": [
+        "Network",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "security_group",
+      "name": "sg-upload-ssh"
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-internal",
+      "kind": "network",
+      "labels": [
+        "Network",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "security_group",
+      "name": "sg-internal"
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-private",
+      "kind": "network",
+      "labels": [
+        "Network",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "security_group",
+      "name": "sg-private"
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-public",
+      "kind": "network",
+      "labels": [
+        "Network",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "subnet",
+      "name": "subnet-public",
+      "props": {
+        "is_public": true
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-private",
+      "kind": "network",
+      "labels": [
+        "Network",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "region": "ap-south-1",
+      "resource_type": "subnet",
+      "name": "subnet-private",
+      "props": {
+        "is_public": false
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:iam::123456789012:role/upload-writer",
+      "kind": "identity",
+      "labels": [
+        "Identity",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "resource_type": "iam_role",
+      "name": "upload-writer",
+      "props": {
+        "privilege": "narrow"
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:iam::123456789012:role/internal-reader",
+      "kind": "identity",
+      "labels": [
+        "Identity",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "resource_type": "iam_role",
+      "name": "internal-reader",
+      "props": {
+        "privilege": "narrow"
+      }
+    },
+    {
+      "schema_version": "trust_graph_node.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "node_id": "arn:aws:iam::123456789012:role/platform-admin",
+      "kind": "identity",
+      "labels": [
+        "Identity",
+        "TrustGraphNode"
+      ],
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ],
+      "cloud": "aws",
+      "resource_type": "iam_role",
+      "name": "platform-admin",
+      "props": {
+        "privilege": "admin"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e001e001e001e001e001e001e001e001",
+      "kind": "allows_ingress",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-upload-ssh",
+      "dst_id": "net:0.0.0.0/0",
+      "props": {
+        "port": 22,
+        "cidr": "0.0.0.0/0",
+        "protocol": "tcp"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e002e002e002e002e002e002e002e002",
+      "kind": "allows_ingress",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-internal",
+      "dst_id": "net:0.0.0.0/0",
+      "props": {
+        "port": 22,
+        "cidr": "10.0.0.0/8"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e003e003e003e003e003e003e003e003",
+      "kind": "has_sg",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-upload-ssh",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e004e004e004e004e004e004e004e004",
+      "kind": "has_sg",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:instance/internal-worker",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-internal",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e005e005e005e005e005e005e005e005",
+      "kind": "has_sg",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:instance/private-admin-host",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:security-group/sg-private",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e006e006e006e006e006e006e006e006",
+      "kind": "in_subnet",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-public",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e007e007e007e007e007e007e007e007",
+      "kind": "in_subnet",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:instance/internal-worker",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-private",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e008e008e008e008e008e008e008e008",
+      "kind": "in_subnet",
+      "src_id": "arn:aws:ec2:ap-south-1:123456789012:instance/private-admin-host",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-private",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e009e009e009e009e009e009e009e009",
+      "kind": "attached_to",
+      "src_id": "arn:aws:iam::123456789012:role/upload-writer",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "props": {
+        "via": "instance_profile"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e010e010e010e010e010e010e010e010",
+      "kind": "attached_to",
+      "src_id": "arn:aws:iam::123456789012:role/internal-reader",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:instance/internal-worker",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e011e011e011e011e011e011e011e011",
+      "kind": "attached_to",
+      "src_id": "arn:aws:iam::123456789012:role/platform-admin",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:instance/private-admin-host",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e012e012e012e012e012e012e012e012",
+      "kind": "can_write",
+      "src_id": "arn:aws:iam::123456789012:role/upload-writer",
+      "dst_id": "arn:aws:s3:::customer-uploads",
+      "props": {
+        "actions": [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e013e013e013e013e013e013e013e013",
+      "kind": "can_read",
+      "src_id": "arn:aws:iam::123456789012:role/internal-reader",
+      "dst_id": "arn:aws:s3:::archive-internal",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e014e014e014e014e014e014e014e014",
+      "kind": "can_admin",
+      "src_id": "arn:aws:iam::123456789012:role/platform-admin",
+      "dst_id": "arn:aws:s3:::customer-uploads",
+      "props": {
+        "actions": [
+          "s3:*"
+        ]
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e015e015e015e015e015e015e015e015",
+      "kind": "owns",
+      "src_id": "acct:aws:123456789012",
+      "dst_id": "arn:aws:s3:::customer-uploads",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e016e016e016e016e016e016e016e016",
+      "kind": "owns",
+      "src_id": "acct:aws:123456789012",
+      "dst_id": "arn:aws:s3:::archive-internal",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e017e017e017e017e017e017e017e017",
+      "kind": "owns",
+      "src_id": "acct:aws:123456789012",
+      "dst_id": "arn:aws:s3:::public-read-only-bucket",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    },
+    {
+      "schema_version": "trust_graph_edge.v1",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "edge_id": "e018e018e018e018e018e018e018e018",
+      "kind": "owns",
+      "src_id": "acct:aws:123456789012",
+      "dst_id": "arn:aws:ec2:ap-south-1:123456789012:instance/upload-bastion",
+      "props": {
+        "confidence": "exact"
+      },
+      "status": "active",
+      "last_seen": "2026-09-11T12:00:00Z",
+      "last_scan_run_id": "44444444-4444-4444-8444-444444444444",
+      "source_modules": [
+        "demo_fixture"
+      ]
+    }
+  ]
+}

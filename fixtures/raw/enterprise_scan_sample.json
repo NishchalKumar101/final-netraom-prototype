@@ -1,0 +1,51 @@
+{
+  "schema_version": "demo_cloud_scan_bundle.v1",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "description": "Representative shard (not full ~500 assets). Enterprise load is generated in-memory by fixture_gen; collectors emit thousands of records like this per run.",
+  "cloud": "aws",
+  "shards": [
+    {
+      "module": "aws.apigateway",
+      "api": "GetRestApis + GetResources",
+      "records": [
+        {
+          "name": "public-orders-api",
+          "id": "abc123",
+          "endpointConfiguration": { "types": ["REGIONAL"] },
+          "policy": null,
+          "authorizers": [],
+          "methods": [{ "resource": "/orders", "httpMethod": "ANY", "authorizationType": "NONE" }]
+        }
+      ]
+    },
+    {
+      "module": "aws.elbv2",
+      "api": "DescribeLoadBalancers + DescribeListeners",
+      "records": [
+        {
+          "LoadBalancerName": "public-app-alb",
+          "Scheme": "internet-facing",
+          "Type": "application",
+          "SecurityGroups": ["sg-alb-public"]
+        }
+      ]
+    },
+    {
+      "module": "aws.rds",
+      "api": "DescribeDBInstances",
+      "records": [
+        {
+          "DBInstanceIdentifier": "orders-db",
+          "PubliclyAccessible": true,
+          "StorageEncrypted": false,
+          "VpcSecurityGroups": [{ "VpcSecurityGroupId": "sg-rds-public" }]
+        }
+      ]
+    }
+  ],
+  "normalizer_notes": [
+    "Enterprise fixture repeats common CSPM patterns (APIGW NONE, public ALB, public RDS, T2 paths) at scale",
+    "Normalizer emits trust_graph_node.v1 / trust_graph_edge.v1 + portal asset rows",
+    "POST /demo/load {\"fixture\":\"enterprise\"} skips raw S3 and ingests normalized graph directly"
+  ]
+}

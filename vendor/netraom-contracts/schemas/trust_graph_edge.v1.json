@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.netraom.io/trust_graph_edge.v1.json",
+  "title": "TrustGraphEdge",
+  "description": "Directed edge in the Netraom Trust Graph",
+  "type": "object",
+  "required": [
+    "tenant_id",
+    "edge_id",
+    "kind",
+    "src_id",
+    "dst_id",
+    "last_seen",
+    "last_scan_run_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "trust_graph_edge.v1" },
+    "tenant_id": { "type": "string", "format": "uuid" },
+    "edge_id": { "type": "string", "minLength": 8, "maxLength": 64 },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "owns",
+        "contains",
+        "in_vpc",
+        "in_subnet",
+        "attached_to",
+        "has_sg",
+        "uses",
+        "can_assume",
+        "can_read",
+        "can_write",
+        "can_admin",
+        "grants",
+        "trusts",
+        "federates_to",
+        "allows_ingress",
+        "allows_egress",
+        "resolves_to",
+        "serves",
+        "exposes",
+        "issued_for",
+        "redirects_to",
+        "runs_image",
+        "deploys",
+        "same_as",
+        "related_to"
+      ]
+    },
+    "src_id": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "dst_id": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "props": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "status": { "type": "string", "enum": ["active", "deleted"] },
+    "last_seen": { "type": "string", "format": "date-time" },
+    "last_scan_run_id": { "type": "string", "format": "uuid" },
+    "source_modules": {
+      "type": "array",
+      "maxItems": 16,
+      "items": { "type": "string", "maxLength": 64 }
+    }
+  }
+}

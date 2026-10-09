@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.netraom.io/trust_graph_node.v1.json",
+  "title": "TrustGraphNode",
+  "description": "Node in the Netraom Trust Graph",
+  "type": "object",
+  "required": [
+    "tenant_id",
+    "node_id",
+    "kind",
+    "labels",
+    "last_seen",
+    "last_scan_run_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "trust_graph_node.v1" },
+    "tenant_id": { "type": "string", "format": "uuid" },
+    "node_id": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "kind": {
+      "type": "string",
+      "enum": ["account", "identity", "resource", "network", "external", "service", "image"]
+    },
+    "labels": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": { "type": "string", "maxLength": 64 }
+    },
+    "cloud": { "type": "string", "enum": ["aws", "gcp", "azure"] },
+    "cloud_account_id": { "type": "string", "format": "uuid" },
+    "region": { "type": "string", "maxLength": 64 },
+    "resource_type": { "type": "string", "maxLength": 64 },
+    "native_id": { "type": "string", "maxLength": 512 },
+    "name": { "type": "string", "maxLength": 256 },
+    "props": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "status": { "type": "string", "enum": ["active", "deleted"] },
+    "last_seen": { "type": "string", "format": "date-time" },
+    "last_scan_run_id": { "type": "string", "format": "uuid" },
+    "source_modules": {
+      "type": "array",
+      "maxItems": 16,
+      "items": { "type": "string", "maxLength": 64 }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.netraom.io/finding.v1.json",
+  "title": "Finding",
+  "description": "Unified security finding across CSPM, ASM, vuln, and combo modules",
+  "type": "object",
+  "required": [
+    "tenant_id",
+    "fingerprint",
+    "source",
+    "rule_id",
+    "title",
+    "severity",
+    "ssvc_action",
+    "exposure",
+    "status",
+    "first_seen",
+    "last_seen"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "tenant_id": { "type": "string", "format": "uuid" },
+    "fingerprint": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "source": {
+      "type": "string",
+      "enum": ["cspm", "asm", "vuln", "brand", "supply", "ai-surface", "toxic-combo"]
+    },
+    "rule_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "control_ids": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 64 }
+    },
+    "asset_id": { "type": "string", "format": "uuid" },
+    "canonical_key": { "type": "string", "maxLength": 512 },
+    "cloud": { "type": "string", "enum": ["aws", "gcp", "azure"] },
+    "cloud_account_id": { "type": "string", "format": "uuid" },
+    "region": { "type": "string", "maxLength": 64 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "description": { "type": "string", "maxLength": 8192 },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low", "info"]
+    },
+    "ssvc_action": {
+      "type": "string",
+      "enum": ["immediate", "out_of_cycle", "scheduled", "defer"]
+    },
+    "exposure": {
+      "type": "string",
+      "enum": ["internet", "partner", "internal"]
+    },
+    "cvss_score": { "type": "number", "minimum": 0, "maximum": 10 },
+    "cve_ids": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 32 }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "in_progress", "resolved", "closed"]
+    },
+    "disposition": {
+      "type": ["string", "null"],
+      "enum": ["false_positive", "accepted_risk", "exception", "suppressed", null]
+    },
+    "triage_state": {
+      "type": "string",
+      "enum": ["new", "triaged", "assigned", "escalated", "pending_verification"]
+    },
+    "priority": { "type": "string", "enum": ["p1", "p2", "p3", "p4"] },
+    "why_it_matters": { "type": "string", "maxLength": 4096 },
+    "remediation_guidance": { "type": "string", "maxLength": 8192 },
+    "evidence_ref": { "type": "string", "pattern": "^s3://" },
+    "related_finding_ids": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "related_asset_ids": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "trust_graph_node_ids": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 512 }
+    },
+    "coverage": {
+      "type": "string",
+      "enum": ["complete", "partial_missing_accounts"]
+    },
+    "first_seen": { "type": "string", "format": "date-time" },
+    "last_seen": { "type": "string", "format": "date-time" },
+    "last_verified": { "type": "string", "format": "date-time" },
+    "occurrence_count": { "type": "integer", "minimum": 1 }
+  }
+}

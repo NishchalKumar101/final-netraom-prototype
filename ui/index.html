@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSPM Trust Graph Demo</title>
+    <script>
+      try {
+        var theme = localStorage.getItem("netraom-theme");
+        document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
+      } catch (e) {
+        document.documentElement.dataset.theme = "dark";
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

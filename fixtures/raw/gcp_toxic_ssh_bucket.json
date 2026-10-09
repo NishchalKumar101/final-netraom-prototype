@@ -1,0 +1,89 @@
+{
+  "schema_version": "demo_cloud_scan_bundle.v1",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "run_id": "44444444-4444-4444-8444-444444444444",
+  "cloud": "gcp",
+  "project_id": "demo-gcp-project",
+  "description": "Synthetic collector output (CAI / API-shaped) for the GCP toxic SSH → bucket lab.",
+  "collected_at": "2026-09-11T12:00:00Z",
+  "shards": [
+    {
+      "module": "gcp.storage",
+      "api": "storage.buckets.get + getIamPolicy",
+      "records": [
+        {
+          "name": "customer-uploads-gcs",
+          "id": "gcp://storage/demo-gcp-project/customer-uploads-gcs",
+          "iamConfiguration": { "publicAccessPrevention": "inherited" },
+          "iamPolicy": {
+            "bindings": [
+              {
+                "role": "roles/storage.objectViewer",
+                "members": ["allUsers"]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "module": "gcp.compute",
+      "api": "compute.instances.get",
+      "records": [
+        {
+          "name": "upload-bastion-gce",
+          "selfLink": "gcp://compute/demo-gcp-project/zones/ap-south-1-a/instances/upload-bastion-gce",
+          "networkInterfaces": [
+            {
+              "accessConfigs": [{ "type": "ONE_TO_ONE_NAT", "natIP": "203.0.113.20" }],
+              "networkIP": "10.0.0.5"
+            }
+          ],
+          "serviceAccounts": [
+            {
+              "email": "upload-writer-sa@demo-gcp-project.iam.gserviceaccount.com",
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"]
+            }
+          ],
+          "tags": { "items": ["ssh-bastion"] }
+        }
+      ]
+    },
+    {
+      "module": "gcp.compute",
+      "api": "compute.firewalls.list",
+      "records": [
+        {
+          "name": "allow-ssh-world",
+          "direction": "INGRESS",
+          "sourceRanges": ["0.0.0.0/0"],
+          "allowed": [{ "IPProtocol": "tcp", "ports": ["22"] }],
+          "targetTags": ["ssh-bastion"]
+        }
+      ]
+    },
+    {
+      "module": "gcp.iam",
+      "api": "iam.serviceAccounts.get + projects.getIamPolicy",
+      "records": [
+        {
+          "email": "upload-writer-sa@demo-gcp-project.iam.gserviceaccount.com",
+          "displayName": "upload-writer-sa",
+          "projectRoles": ["roles/storage.objectAdmin"],
+          "bucketBindings": [
+            {
+              "bucket": "customer-uploads-gcs",
+              "role": "roles/storage.objectAdmin"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "normalizer_notes": [
+    "allUsers on bucket → is_internet_exposed on asset + public props on GCS node",
+    "Firewall 0.0.0.0/0:22 + tag → allows_ingress on firewall node",
+    "GCE service account → identity node + attached_to instance",
+    "objectAdmin on bucket → can_write edge"
+  ]
+}
